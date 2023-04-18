@@ -4,7 +4,7 @@ import {
   postShoppingListItem,
   getShoppingListItemById,
   getShoppingListItemsByUser,
-  sortShoppingListByType,
+  //sortShoppingListByType,
   safeShoppingList,
   deleteShoppingListById,
   deleteShoppingListItemByID,
@@ -27,6 +27,7 @@ import jwt from 'jsonwebtoken';
 import { ShoppingItemTest } from '../app/interfaces/ShoppingItem';
 import app from '../app/app'
 import LoginMessageResponse from '../app/interfaces/LoginMessageResponse'
+import { ShoppingItemListTest } from '../app/interfaces/ShoppingItemList';
 describe('Testing graphql api', () => {
   beforeAll(async () => {
     await mongoose.connect(process.env.DATABASE_URL as string);
@@ -71,7 +72,7 @@ describe('Testing graphql api', () => {
   // it('should create a new user', async () => {
   //   await postUser(app, adminUser);
   // });
-  // create second user to try to modify someone else's cats and userdata
+  //create second user to try to modify someone else's cats and userdata
   it('should create second user', async () => {
     await postUser(app, testUser2);
   });
@@ -124,28 +125,55 @@ describe('Testing graphql api', () => {
     type: 'food',
     description: randomstring.generate(25)
   };
-  // test post cat data
-  let itemID: string;
+
+  //create two more items to sort for example
+  let shoppingTestItem2: ShoppingItemTest = {
+    title: 'Test shopping item' + randomstring.generate(7),
+    type: 'other',
+    description: randomstring.generate(25)
+  };
+  let shoppingTestItem3: ShoppingItemTest = {
+    title: 'Test shopping item' + randomstring.generate(7),
+    type: 'beverage',
+    description: randomstring.generate(25)
+  };
+
+  // to get the id's from the items
+  let itemID1: string;
   it('should create a new shopping list item',async () => {
     const item = await postShoppingListItem(app, shoppingTestItem1, userData.token!);
-    itemID = item.id!;
+    itemID1 = item.id!;
   });
-  
+  let itemID2: string;
+  it('should create a new shopping list item',async () => {
+    const item = await postShoppingListItem(app, shoppingTestItem2, userData.token!);
+    itemID2 = item.id!;
+  });  let itemID3: string;
+  it('should create a new shopping list item',async () => {
+    const item = await postShoppingListItem(app, shoppingTestItem3, userData.token!);
+    itemID3 = item.id!;
+  });
   it('should be possible to get a specific item',async () => {
-    await getShoppingListItemById(app, itemID, userData.token!);  
+    await getShoppingListItemById(app, itemID1, userData.token!);  
   })
-  
   
   it('items from a user shouldnt be empty',async () => {
     await getShoppingListItemsByUser(app, userData.user.id!, userData.token!);
   });
-  /*
-  it('sort the list by type', async () => {
-    await postShoppingListItem();
-    await postShoppingListItem();
-    await sortShoppingListByType();
-  })
+  
+  //not a backend function?
+  // it('sort the list by type', async () => {
+  //   await sortShoppingListByType();
+  // })
+  let shoppingListTestItem1: ShoppingItemListTest = {
+    title: 'Test shopping item' + randomstring.generate(7),
+  };
   it('should be possible to safe the list',async () => {
+    let itemIdArray = [itemID1, itemID2];
+    await safeShoppingList(app, shoppingListTestItem1, userData.token!);
+  })
+  /*
+  it('should be possible to load a safed list',async () => {
     await safeShoppingList();
   })
   it('should delete a specific item',async () => {

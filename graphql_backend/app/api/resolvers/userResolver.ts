@@ -2,6 +2,7 @@ import {GraphQLError} from 'graphql';
 import {ShoppingItem} from '../../interfaces/ShoppingItem';
 import LoginMessageResponse from '../../interfaces/LoginMessageResponse';
 import {User, UserIdWithToken} from '../../interfaces/User';
+import { ShoppingItemList } from '../../interfaces/ShoppingItemList';
 // TODO: create resolvers based on user.graphql
 // note: when updating or deleting a user don't send id to the auth server, it will get it from the token
 // note2: when updating or deleting a user as admin, you need to check if the user is an admin by checking the role from the user object
@@ -9,6 +10,20 @@ import {User, UserIdWithToken} from '../../interfaces/User';
 export default {
   ShoppingItem: {
     owner: async (parent: ShoppingItem) => {
+      const response = await fetch(
+        `${process.env.AUTH_URL}/users/${parent.owner}`
+      );
+      if (!response.ok) {
+        throw new GraphQLError(response.statusText, {
+          extensions: {code: 'NOT_FOUND'},
+        });
+      }
+      const user = (await response.json()) as User;
+      return user;
+    },
+  },
+  ShoppingItemList: {
+    owner: async (parent: ShoppingItemList) => {
       const response = await fetch(
         `${process.env.AUTH_URL}/users/${parent.owner}`
       );

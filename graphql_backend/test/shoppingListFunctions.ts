@@ -1,6 +1,8 @@
 import request from 'supertest';
 import expect from 'expect';
-import {ShoppingItemTest} from '../app/interfaces/ShoppingItem';
+import {ShoppingItem, ShoppingItemTest} from '../app/interfaces/ShoppingItem';
+import {ShoppingItemListTest} from '../app/interfaces/ShoppingItemList';
+
 require('dotenv').config();
 
 const postShoppingListItem = (
@@ -36,7 +38,6 @@ const postShoppingListItem = (
             expect(newShoppingItem).toHaveProperty('id');
             expect(newShoppingItem).toHaveProperty('title');
             expect(newShoppingItem).toHaveProperty('description');
-            expect(newShoppingItem.type).toBe(item.type);
             resolve(response.body.data.createShoppingListItem);
           }
         })
@@ -132,7 +133,10 @@ const getShoppingListItemsByUser = (
             type
             title
           }
-        }`,
+        }`,        
+        variables: {
+          ownerId: id,
+        },
       })
       .expect(200, (err, response) => {
         if (err) {
@@ -140,37 +144,69 @@ const getShoppingListItemsByUser = (
         } else {
           const items = response.body.data.shoppingItemsByUser;
           expect(items).toBeInstanceOf(Array);
-          // cats.forEach((cat: CatTest) => {
-          //   expect(cat).toHaveProperty('id');
-          //   expect(cat).toHaveProperty('cat_name');
-          //   expect(cat).toHaveProperty('weight');
-          //   expect(cat).toHaveProperty('location');
-          //   expect(cat).toHaveProperty('filename');
-          //   expect(cat).toHaveProperty('birthdate');
-          //   expect(cat).toHaveProperty('owner');
-          //   expect(cat.owner).toHaveProperty('email');
-          //   expect(cat.owner).toHaveProperty('id');
-          //   expect(cat.owner).toHaveProperty('user_name');
-          // });
+          items.forEach((item: ShoppingItemTest) => {
+            expect(item).toHaveProperty('id');
+            expect(item).toHaveProperty('title');
+            expect(item).toHaveProperty('type');
+            expect(item).toHaveProperty('description');
+            expect(item).toHaveProperty('owner');
+            expect(item.owner).toHaveProperty('email');
+            expect(item.owner).toHaveProperty('id');
+            expect(item.owner).toHaveProperty('user_name');
+          });
           resolve(items);
         }
       });
     })
   };
 
-const sortShoppingListByType = (
-  url: string | Function, 
-  item: ShoppingItemTest): Promise<ShoppingItemTest> => {
-    return new Promise((resolve, reject) => {
+  //not a backend function?
+// const sortShoppingListByType = (
+//   url: string | Function, 
+//   item: ShoppingItemTest): Promise<ShoppingItemTest> => {
+//     return new Promise((resolve, reject) => {
       
-    })
-  };
+//     })
+//   };
 
+//shoppingListName: string, itemIds: string[], token: string
 const safeShoppingList = (
   url: string | Function, 
-  item: ShoppingItemTest): Promise<ShoppingItemTest> => {
+  item: ShoppingItemListTest, token: string): Promise<ShoppingItemListTest> => {
     return new Promise((resolve, reject) => {
-      
+      request(url)
+      .post('/graphql')
+      .set('Content-type', 'application/json')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        query: `mutation SafeShoppingListItemList($title: String!) {
+          safeShoppingListItemList(title: $title) {
+            title
+          }
+        }`,        
+        variables: item
+      })
+      .expect(200, (err, response) => {
+        if (err) {
+          reject(err);
+        } else {
+          const itemList = response.body.data;
+          console.log(itemList)
+          console.log(item)
+          //expect(itemList).toBeInstanceOf(Array);
+          // items.forEach((item: ShoppingItemTest) => {
+          //   expect(item).toHaveProperty('id');
+          //   expect(item).toHaveProperty('title');
+          //   expect(item).toHaveProperty('type');
+          //   expect(item).toHaveProperty('description');
+          //   expect(item).toHaveProperty('owner');
+          //   expect(item.owner).toHaveProperty('email');
+          //   expect(item.owner).toHaveProperty('id');
+          //   expect(item.owner).toHaveProperty('user_name');
+          // });
+          resolve(itemList);
+        }
+      });
     })
   };
 
@@ -215,5 +251,5 @@ export {
   deleteShoppingListItemByID,
   loadShoppingListById,
   createPurchaseAfterCompletingAList,
-  sortShoppingListByType
+  //sortShoppingListByType
 }

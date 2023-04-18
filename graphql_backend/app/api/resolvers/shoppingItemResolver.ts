@@ -18,13 +18,13 @@ export default {
       args.owner = user.id as unknown as Types.ObjectId;
       return await shoppingItemModel.findById(args.id);
     },
-    shoppingItemsByUser: async (_parent: undefined, args: ShoppingItem, user: UserIdWithToken) => {
+    shoppingItemsByUser: async (_parent: undefined, args: User, user: UserIdWithToken) => {
       if (!user.token) {
         throw new GraphQLError('Not authorized', {
           extensions: {code: 'NOT_AUTHORIZED'},
         });
       }
-      return await shoppingItemModel.find({owner: user.id});
+      return await shoppingItemModel.find({owner: args.id});
     },
   },
   Mutation: {
