@@ -36,6 +36,6 @@ export default async (req: Request) => {
   }
 
   userFromToken.token = token;
-
+  console.log("authenticate ", userFromToken)
   return userFromToken;
 };

@@ -144,6 +144,7 @@ const getShoppingListItemsByUser = (
         } else {
           const items = response.body.data.shoppingItemsByUser;
           expect(items).toBeInstanceOf(Array);
+          console.log(items)
           items.forEach((item: ShoppingItemTest) => {
             expect(item).toHaveProperty('id');
             expect(item).toHaveProperty('title');
@@ -172,39 +173,67 @@ const getShoppingListItemsByUser = (
 //shoppingListName: string, itemIds: string[], token: string
 const safeShoppingList = (
   url: string | Function, 
-  item: ShoppingItemListTest, token: string): Promise<ShoppingItemListTest> => {
+  shoppingListName: string, itemIds: string[], token: string): Promise<ShoppingItemListTest> => {
     return new Promise((resolve, reject) => {
       request(url)
       .post('/graphql')
       .set('Content-type', 'application/json')
       .set('Authorization', `Bearer ${token}`)
       .send({
-        query: `mutation SafeShoppingListItemList($title: String!) {
-          safeShoppingListItemList(title: $title) {
+        query: `mutation SafeShoppingListItemList($title: String!, $items: [ID!]!) {
+          safeShoppingListItemList(title: $title, items: $items) {
             title
+            owner {
+              email
+              id
+              user_name
+            }
+            id
+            items {
+              type
+              title
+              owner {
+                user_name
+                id
+                email
+              }
+              description
+              id
+            }
           }
         }`,        
-        variables: item
+        variables: {
+          items: itemIds,
+          title: shoppingListName
+        }
       })
       .expect(200, (err, response) => {
         if (err) {
           reject(err);
         } else {
-          const itemList = response.body.data;
-          console.log(itemList)
-          console.log(item)
-          //expect(itemList).toBeInstanceOf(Array);
-          // items.forEach((item: ShoppingItemTest) => {
-          //   expect(item).toHaveProperty('id');
-          //   expect(item).toHaveProperty('title');
-          //   expect(item).toHaveProperty('type');
-          //   expect(item).toHaveProperty('description');
-          //   expect(item).toHaveProperty('owner');
-          //   expect(item.owner).toHaveProperty('email');
-          //   expect(item.owner).toHaveProperty('id');
-          //   expect(item.owner).toHaveProperty('user_name');
-          // });
-          resolve(itemList);
+          const shoppingList = response.body.data.safeShoppingListItemList;
+          expect(shoppingList).toHaveProperty('id');
+          expect(shoppingList).toHaveProperty('title');
+          expect(shoppingList).toHaveProperty('owner');
+          expect(shoppingList.owner).toHaveProperty('email');
+          expect(shoppingList.owner).toHaveProperty('id');
+          expect(shoppingList.owner).toHaveProperty('user_name');
+          expect(shoppingList).toHaveProperty('items');
+          expect(shoppingList.items).toBeInstanceOf(Array);
+          shoppingList.items.forEach((item: ShoppingItemTest) => {
+            expect(item).toHaveProperty('id');
+            expect(item).toHaveProperty('title');
+            expect(item).toHaveProperty('type');
+            expect(item).toHaveProperty('description');
+            expect(item).toHaveProperty('owner');
+            expect(item.owner).toHaveProperty('email');
+            expect(item.owner).toHaveProperty('id');
+            expect(item.owner).toHaveProperty('user_name');
+          });
+          console.log(itemIds)
+          console.log(shoppingList)
+          console.log(shoppingListName)
+          resolve(shoppingList);
         }
       });
     })

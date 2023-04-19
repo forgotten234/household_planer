@@ -68,7 +68,7 @@ describe('Testing graphql api', () => {
     await postUser(app, testUser);
   });
   
-  // //create first user
+  // create first user
   // it('should create a new user', async () => {
   //   await postUser(app, adminUser);
   // });
@@ -170,7 +170,7 @@ describe('Testing graphql api', () => {
   };
   it('should be possible to safe the list',async () => {
     let itemIdArray = [itemID1, itemID2];
-    await safeShoppingList(app, shoppingListTestItem1, userData.token!);
+    await safeShoppingList(app, shoppingListTestItem1.title!, itemIdArray, userData.token!);
   })
   /*
   it('should be possible to load a safed list',async () => {

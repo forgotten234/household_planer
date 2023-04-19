@@ -1,5 +1,9 @@
 scalar DateTime
 
+# input ShoppingItemInput {
+#     id: ID!
+# }
+
 type ShoppingItem {
   id: ID!
   title: String!

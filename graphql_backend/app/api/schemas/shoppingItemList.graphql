@@ -1,21 +1,15 @@
-scalar DateTime
-
-# input ShoppingItemListInput {
-#   title: String!
-#   itemIds: [String!]!
-# }
 
 type ShoppingItemList {
   id: ID!
   title: String!
-  #items: [ShoppingItem!]!
+  items: [ShoppingItem!]!
   owner: User!
 } 
 
 type Query {
   shoppingItemLists: [ShoppingItemList]
-  shoppingItemListById(id: ID!): ShoppingItemList
-  shoppingItemListsByUser(ownerId: ID!): [ShoppingItemList]
+  # shoppingItemListById(id: ID!): ShoppingItemList
+  # shoppingItemListsByUser(ownerId: ID!): [ShoppingItemList]
   # shoppingItems: [Cat]
   # catsByArea(topRight: Coordinates!, bottomLeft: Coordinates!): [Cat]
   # catsByOwner(ownerId: ID!): [Cat]
@@ -23,7 +17,8 @@ type Query {
 
 type Mutation {
   safeShoppingListItemList(
-    title: String!,
+    title: String!
+    items: [ID!]!
   ): ShoppingItemList
   # updateCat(id: ID!, cat_name: String, weight: Float, birthdate: DateTime): Cat
   # deleteCat(id: ID!): Cat
