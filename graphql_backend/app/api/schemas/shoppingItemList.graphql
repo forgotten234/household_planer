@@ -1,0 +1,32 @@
+
+type ShoppingItemList {
+  id: ID!
+  title: String!
+  items: [ShoppingItem!]!
+  owner: User!
+} 
+
+type Query {
+  shoppingItemLists: [ShoppingItemList]
+  # shoppingItemListById(id: ID!): ShoppingItemList
+  # shoppingItemListsByUser(ownerId: ID!): [ShoppingItemList]
+  # shoppingItems: [Cat]
+  # catsByArea(topRight: Coordinates!, bottomLeft: Coordinates!): [Cat]
+  # catsByOwner(ownerId: ID!): [Cat]
+}
+
+type Mutation {
+  safeShoppingListItemList(
+    title: String!
+    items: [ID!]!
+  ): ShoppingItemList
+  # updateCat(id: ID!, cat_name: String, weight: Float, birthdate: DateTime): Cat
+  # deleteCat(id: ID!): Cat
+  # updateCatAsAdmin(
+  #   id: ID!
+  #   cat_name: String
+  #   weight: Float
+  #   birthdate: DateTime
+  # ): Cat
+  # deleteCatAsAdmin(id: ID!): Cat
+}

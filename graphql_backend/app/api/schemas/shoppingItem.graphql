@@ -1,0 +1,39 @@
+scalar DateTime
+
+# input ShoppingItemInput {
+#     id: ID!
+# }
+
+type ShoppingItem {
+  id: ID!
+  title: String!
+  type: String!
+  description: String!
+  owner: User!
+} 
+
+type Query {
+  shoppingItems: [ShoppingItem]
+  shoppingItemById(id: ID!): ShoppingItem
+  shoppingItemsByUser(ownerId: ID!): [ShoppingItem]
+  # shoppingItems: [Cat]
+  # catsByArea(topRight: Coordinates!, bottomLeft: Coordinates!): [Cat]
+  # catsByOwner(ownerId: ID!): [Cat]
+}
+
+type Mutation {
+  createShoppingListItem(
+    title: String!
+    type: String!
+    description: String!
+  ): ShoppingItem
+  # updateCat(id: ID!, cat_name: String, weight: Float, birthdate: DateTime): Cat
+  # deleteCat(id: ID!): Cat
+  # updateCatAsAdmin(
+  #   id: ID!
+  #   cat_name: String
+  #   weight: Float
+  #   birthdate: DateTime
+  # ): Cat
+  # deleteCatAsAdmin(id: ID!): Cat
+}
