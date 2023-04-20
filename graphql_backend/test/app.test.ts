@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose, {Types} from 'mongoose';
 import randomstring from 'randomstring';
 import {
   postShoppingListItem,
@@ -6,11 +6,13 @@ import {
   getShoppingListItemsByUser,
   //sortShoppingListByType,
   safeShoppingList,
-  deleteShoppingListById,
-  deleteShoppingListItemByID,
-  loadShoppingListById,
+  deleteShoppingListByUser,
+  deleteShoppingListItemByUser,
+  loadShoppingListsByUser,
   createPurchaseAfterCompletingAList,
-  
+  updateShoppingListByUser,
+  loadShoppingListById,
+  updateShoppingItem
 } from './shoppingListFunctions'
 import {
   adminDeleteUser,
@@ -68,10 +70,10 @@ describe('Testing graphql api', () => {
     await postUser(app, testUser);
   });
   
-  // create first user
-  // it('should create a new user', async () => {
-  //   await postUser(app, adminUser);
-  // });
+  //create first user
+  it('should create a new user', async () => {
+    await postUser(app, adminUser);
+  });
   //create second user to try to modify someone else's cats and userdata
   it('should create second user', async () => {
     await postUser(app, testUser2);
@@ -118,6 +120,7 @@ describe('Testing graphql api', () => {
 
   /*
     Shopping list tests
+    The delete item test is after the updateing lists test
   */
 
   let shoppingTestItem1: ShoppingItemTest = {
@@ -161,30 +164,60 @@ describe('Testing graphql api', () => {
     await getShoppingListItemsByUser(app, userData.user.id!, userData.token!);
   });
   
+  let newItem: ShoppingItemTest = {
+    title: "newTitle",
+    type: "beverage",
+    description: "agfsdfgafadf"
+  }
+  it('should be possible to update a item', async () => {
+    await updateShoppingItem(app, newItem, itemID1, userData.token!);
+  });
+  
+
   //not a backend function?
   // it('sort the list by type', async () => {
   //   await sortShoppingListByType();
   // })
   let shoppingListTestItem1: ShoppingItemListTest = {
-    title: 'Test shopping item' + randomstring.generate(7),
+    title: 'Test shopping item list' + randomstring.generate(7),
   };
+  let listId1: string;
+  let listId2: string;
+  let oldListLength: number; // to compare if more items are added
   it('should be possible to safe the list',async () => {
     let itemIdArray = [itemID1, itemID2];
-    await safeShoppingList(app, shoppingListTestItem1.title!, itemIdArray, userData.token!);
+    const list = await safeShoppingList(app, shoppingListTestItem1.title!, itemIdArray, userData.token!);
+    listId1 = list.id!;
+    oldListLength = list.items?.length === undefined ? 0 : list.items?.length;
+  })
+  it('should load a specific list', async () => {
+    await loadShoppingListById(app ,listId1, userData.token!);
+  })
+  it('should update the list ', async () => {
+    let newItemIdArray= [itemID1,itemID2, itemID3];     
+    await updateShoppingListByUser(app, newItemIdArray, "newName", listId1, oldListLength, userData.token!)
+  })
+  it('should be possible to safe a second list',async () => {
+    let itemIdArray = [itemID1, itemID2];
+    const list = await safeShoppingList(app, shoppingListTestItem1.title!, itemIdArray, userData.token!);
+    listId2 = list.id!;
+    oldListLength = list.items?.length === undefined ? 0 : list.items?.length;
+  })
+  //the delete method for the item is placed here, because we use some items for the lists. so we dont have to create a fourth item
+  it('should be possible to delete a item',async () => {
+    await deleteShoppingListItemByUser(app, itemID3, userData.token!)
+  })
+  it('should get all lists from a user', async () => {
+    console.log(userData)
+    await loadShoppingListsByUser(app, userData.user.id!, userData.token!);
+  })
+  it('should delete the whole first list',async () => {
+    await deleteShoppingListByUser(app, listId1, userData.token!);
+  })
+  it('should delete the whole second list',async () => {
+    await deleteShoppingListByUser(app, listId2, userData.token!);
   })
   /*
-  it('should be possible to load a safed list',async () => {
-    await safeShoppingList();
-  })
-  it('should delete a specific item',async () => {
-    await deleteShoppingListItemByID();
-  })
-  it('should delete the whole list',async () => {
-    await deleteShoppingListById();
-  })
-  it('should be possible to load the list',async () => {
-    await loadShoppingListById();
-  })
   it('should create a purchase after completing a list',async () => {
     await createPurchaseAfterCompletingAList();
   })*/

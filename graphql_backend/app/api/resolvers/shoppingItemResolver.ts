@@ -10,6 +10,7 @@ import {User, UserIdWithToken} from '../../interfaces/User';
 export default {
   Query: {
     shoppingItemById: async (_parent: undefined, args: ShoppingItem, user: UserIdWithToken) => {
+      console.log("fadfsdfadaflk")
       if (!user.token) {
         throw new GraphQLError('Not authorized', {
           extensions: {code: 'NOT_AUTHORIZED'},
@@ -19,6 +20,7 @@ export default {
       return await shoppingItemModel.findById(args.id);
     },
     shoppingItemsByUser: async (_parent: undefined, args: User, user: UserIdWithToken) => {
+      console.log("fadfsdfadaflk")
       if (!user.token) {
         throw new GraphQLError('Not authorized', {
           extensions: {code: 'NOT_AUTHORIZED'},
@@ -41,6 +43,33 @@ export default {
       args.owner = user.id as unknown as Types.ObjectId;
       const shoppingItem = new shoppingItemModel(args);
       return await shoppingItem.save();
+    },
+    deleteShoppingItemByUser: async (
+      _parent: undefined,
+      args: ShoppingItem,
+      user: UserIdWithToken
+    ) => {
+      if (!user.token) {
+        throw new GraphQLError('Not authorized', {
+          extensions: {code: 'NOT_AUTHORIZED'},
+        });
+      }
+      return await shoppingItemModel.findByIdAndDelete(args.id);
+    },
+    updateShoppingItemByUser: async (
+      _parent: undefined,
+      args: ShoppingItem,
+      user: UserIdWithToken
+    ) => {
+      console.log(!user.token, args)
+      if (!user.token) {
+        throw new GraphQLError('Not authorized', {
+          extensions: {code: 'NOT_AUTHORIZED'},
+        });
+      }
+      return await shoppingItemModel.findByIdAndUpdate(args.id, args, {
+        new: true,
+      });
     },
   },
 }

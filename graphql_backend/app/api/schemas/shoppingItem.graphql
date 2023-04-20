@@ -27,13 +27,6 @@ type Mutation {
     type: String!
     description: String!
   ): ShoppingItem
-  # updateCat(id: ID!, cat_name: String, weight: Float, birthdate: DateTime): Cat
-  # deleteCat(id: ID!): Cat
-  # updateCatAsAdmin(
-  #   id: ID!
-  #   cat_name: String
-  #   weight: Float
-  #   birthdate: DateTime
-  # ): Cat
-  # deleteCatAsAdmin(id: ID!): Cat
+  updateShoppingItemByUser(id: ID!, title: String!, type: String!, description: String!): ShoppingItem
+  deleteShoppingItemByUser(id: ID!): ShoppingItem
 }

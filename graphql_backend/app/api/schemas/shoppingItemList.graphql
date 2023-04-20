@@ -8,7 +8,8 @@ type ShoppingItemList {
 
 type Query {
   shoppingItemLists: [ShoppingItemList]
-  # shoppingItemListById(id: ID!): ShoppingItemList
+  shoppingItemListsByUser(ownerId: ID!): [ShoppingItemList]
+  shoppingItemListById(id: ID!): ShoppingItemList
   # shoppingItemListsByUser(ownerId: ID!): [ShoppingItemList]
   # shoppingItems: [Cat]
   # catsByArea(topRight: Coordinates!, bottomLeft: Coordinates!): [Cat]
@@ -20,13 +21,6 @@ type Mutation {
     title: String!
     items: [ID!]!
   ): ShoppingItemList
-  # updateCat(id: ID!, cat_name: String, weight: Float, birthdate: DateTime): Cat
-  # deleteCat(id: ID!): Cat
-  # updateCatAsAdmin(
-  #   id: ID!
-  #   cat_name: String
-  #   weight: Float
-  #   birthdate: DateTime
-  # ): Cat
-  # deleteCatAsAdmin(id: ID!): Cat
+  deleteShoppingItemListByUser(id: ID!): ShoppingItemList
+  updateShoppingListByUser(id: ID!, title: String, items: [ID!]!): ShoppingItemList
 }
