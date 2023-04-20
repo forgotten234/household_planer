@@ -1,9 +1,3 @@
-scalar DateTime
-
-# input ShoppingItemInput {
-#     id: ID!
-# }
-
 type ShoppingItem {
   id: ID!
   title: String!
@@ -16,9 +10,6 @@ type Query {
   shoppingItems: [ShoppingItem]
   shoppingItemById(id: ID!): ShoppingItem
   shoppingItemsByUser(ownerId: ID!): [ShoppingItem]
-  # shoppingItems: [Cat]
-  # catsByArea(topRight: Coordinates!, bottomLeft: Coordinates!): [Cat]
-  # catsByOwner(ownerId: ID!): [Cat]
 }
 
 type Mutation {
