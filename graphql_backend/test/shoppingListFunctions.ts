@@ -5,6 +5,8 @@ import {ShoppingItemListTest} from '../app/interfaces/ShoppingItemList';
 
 require('dotenv').config();
 
+/* Shopping Item functions */
+
 const postShoppingListItem = (
   url: string | Function, 
   item: ShoppingItemTest, 
@@ -161,7 +163,84 @@ const getShoppingListItemsByUser = (
     })
   };
 
-  //not a backend function?
+const updateShoppingItem = (
+  url: string | Function, 
+  item: ShoppingItemTest,
+  id: string,
+  token: string): Promise<ShoppingItemListTest> => {
+    return new Promise((resolve, reject) => {
+      request(url)
+      .post('/graphql')
+      .set('Content-type', 'application/json')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        query: `mutation Mutation($updateShoppingItemByUserId: ID!, $title: String!, $type: String!, $description: String!) {
+          updateShoppingItemByUser(id: $updateShoppingItemByUserId, title: $title, type: $type, description: $description) {
+            description
+            id
+            owner {
+              user_name
+              id
+              email
+            }
+            title
+            type
+          }
+        }`,
+        variables: {
+          "updateShoppingItemByUserId": id,
+          "title": item.title,
+          "type": item.type,
+          "description": item.description
+        },
+      })
+      .expect(200, (err, response) => {
+        if (err) {
+          reject(err);
+        } else {
+          const updatedItem = response.body.data.updateShoppingItemByUser;
+          expect(updatedItem.title).toBe(item.title);
+          expect(updatedItem.type).toBe(item.type);
+          expect(updatedItem).toHaveProperty('description');
+          resolve(updatedItem);
+        }
+      });
+    })
+};
+const deleteShoppingListItemByUser = (
+  url: string | Function, 
+  id: string,
+  token: string): Promise<ShoppingItemListTest> => {
+    return new Promise((resolve, reject) => {
+      request(url)
+      .post('/graphql')
+      .set('Content-type', 'application/json')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        query: `mutation Mutation($deleteShoppingItemByUserId: ID!) {
+          deleteShoppingItemByUser(id: $deleteShoppingItemByUserId) {
+            id
+          }
+        }`,
+        variables: {
+          "deleteShoppingItemByUserId": id
+        },
+      })
+      .expect(200, (err, response) => {
+        if (err) {
+          reject(err);
+        } else {
+          const deletedCat = response.body.data.deleteShoppingItemByUser;
+          expect(deletedCat.id).toBe(id);
+          resolve(deletedCat);
+        }
+      });
+    })
+  };
+
+/* Shopping List functions */
+
+//not a backend function?
 // const sortShoppingListByType = (
 //   url: string | Function, 
 //   item: ShoppingItemTest): Promise<ShoppingItemTest> => {
@@ -239,29 +318,206 @@ const safeShoppingList = (
     })
   };
 
-const deleteShoppingListItemByID = (
-  url: string | Function, 
-  item: ShoppingItemTest): Promise<ShoppingItemTest> => {
-    return new Promise((resolve, reject) => {
-      
-    })
-  };
 
-const deleteShoppingListById = (
+const deleteShoppingListByUser = (
   url: string | Function, 
-  item: ShoppingItemTest): Promise<ShoppingItemTest> => {
+  id: string, token: string): Promise<ShoppingItemListTest> => {
     return new Promise((resolve, reject) => {
-      
+      request(url)
+      .post('/graphql')
+      .set('Content-type', 'application/json')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        query: `mutation DeleteShoppingItemListByUser($deleteShoppingItemListByUserId: ID!) {
+          deleteShoppingItemListByUser(id: $deleteShoppingItemListByUserId) {
+            id
+          }
+        }`,
+        variables: {
+          deleteShoppingItemListByUserId: id,
+        },
+      })
+      .expect(200, (err, response) => {
+        if (err) {
+          reject(err);
+        } else {
+          const deletedList = response.body.data.deleteShoppingItemListByUser;
+          expect(deletedList.id).toBe(id);
+          resolve(deletedList);
+        }
+      });
     })
-  };
+};
+
+const updateShoppingListByUser = (  
+  url: string | Function,
+  items: string[],
+  shoppingListName: string,
+  id: string,
+  listLength: number,
+  token: string): Promise<ShoppingItemListTest> => {
+    return new Promise((resolve, reject) => {
+      request(url)
+        .post('/graphql')
+        .set('Content-type', 'application/json')
+        .set('Authorization', `Bearer ${token}`)
+        .send({
+          query: `mutation Mutation($updateShoppingListByUserId: ID!, $items: [ID!]!, $title: String) {
+            updateShoppingListByUser(id: $updateShoppingListByUserId, items: $items, title: $title) {
+              id
+              owner {
+                user_name
+                id
+                email
+              }
+              title
+              items {
+                type
+                title
+                id
+                description
+                owner {
+                  user_name
+                  id
+                  email
+                }
+              }
+            }
+          }`,
+          variables: {
+            "updateShoppingListByUserId": id,
+            "items": items,
+            "title": shoppingListName
+          },
+        })
+        .expect(200, (err, response) => {
+          if (err) {
+            reject(err);
+          } else {
+            console.log(response.body.data)
+            const updatedList = response.body.data.updateShoppingListByUser;
+            expect(updatedList).toHaveProperty('id');
+            expect(updatedList).toHaveProperty('items');
+            expect(updatedList).toHaveProperty('owner');
+            expect(updatedList).toHaveProperty('title');
+            expect(updatedList.items.length).toBeGreaterThan(listLength);
+            resolve(updatedList);
+          }
+        });
+    });
+}
+
+const loadShoppingListsByUser = (
+  url: string | Function, 
+  id: string,
+  token: string): Promise<ShoppingItemTest> => {
+    return new Promise((resolve, reject) => {
+      request(url)
+      .post('/graphql')
+      .set('Content-type', 'application/json')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        query: `query ShoppingItemListsByUser($ownerId: ID!) {
+          shoppingItemListsByUser(ownerId: $ownerId) {
+            id
+            items {
+              type
+              title
+              owner {
+                id
+                user_name
+                email
+              }
+              description
+              id
+            }
+            title
+            owner {
+              user_name
+              id
+              email
+            }
+          }
+        }`,
+        variables: {
+          ownerId: id,
+        },
+      })
+      .expect(200, (err, response) => {
+        if (err) {
+          reject(err);
+        } else {
+          const shoppingList = response.body.data.shoppingItemListsByUser;
+          console.log(shoppingList)
+          expect(shoppingList).toBeInstanceOf(Array);
+          shoppingList.forEach((list: ShoppingItemListTest) => {
+            expect(list).toHaveProperty('id');
+            expect(list).toHaveProperty('title');
+            expect(list).toHaveProperty('items');
+            expect(list).toHaveProperty('owner');
+            expect(list.items?.length).toBeGreaterThan(1);
+            expect(list.owner).toHaveProperty('email');
+            expect(list.owner).toHaveProperty('id');
+            expect(list.owner).toHaveProperty('user_name');
+          });
+          resolve(shoppingList);
+        }
+      });
+    })
+};
 
 const loadShoppingListById = (
   url: string | Function, 
-  item: ShoppingItemTest): Promise<ShoppingItemTest> => {
+  id: string, token: string): Promise<ShoppingItemTest> => {
     return new Promise((resolve, reject) => {
-      
-    })
-  };
+      request(url)
+      .post('/graphql')
+      .set('Content-type', 'application/json')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        query: `query ShoppingItemListsByUser($shoppingItemListByIdId: ID!) {
+          shoppingItemListById(id: $shoppingItemListByIdId) {
+            id
+            title
+            owner {
+              user_name
+              id
+              email
+            }
+            items {
+              type
+              title
+              owner {
+                email
+                id
+                user_name
+              }
+              id
+              description
+            }
+          }
+        }`,
+        variables: {
+          "shoppingItemListByIdId": id,
+        },
+      })
+      .expect(200, (err, response) => {
+        if (err) {
+          reject(err);
+        } else {
+          const shoppingItem = response.body.data.shoppingItemListById;
+          expect(shoppingItem).toHaveProperty('id');
+          expect(shoppingItem).toHaveProperty('title');
+          expect(shoppingItem).toHaveProperty('items');
+          expect(shoppingItem.items.length).toBeGreaterThan(0)
+          expect(shoppingItem).toHaveProperty('owner');
+          expect(shoppingItem.owner).toHaveProperty('email');
+          expect(shoppingItem.owner).toHaveProperty('id');
+          resolve(response.body.data.shoppingItemById);
+        }
+      });
+  });
+};
 
 const createPurchaseAfterCompletingAList = (
   url: string | Function, 
@@ -276,9 +532,12 @@ export {
   getShoppingListItemById,
   getShoppingListItemsByUser,
   safeShoppingList,
-  deleteShoppingListById,
-  deleteShoppingListItemByID,
-  loadShoppingListById,
+  deleteShoppingListByUser,
+  deleteShoppingListItemByUser,
+  loadShoppingListsByUser,
   createPurchaseAfterCompletingAList,
+  updateShoppingListByUser,
+  loadShoppingListById,
+  updateShoppingItem
   //sortShoppingListByType
 }
