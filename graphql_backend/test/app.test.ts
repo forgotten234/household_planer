@@ -24,12 +24,19 @@ import {
   postUser,
   putUser,
 } from './userFunctions';
+import {
+  postBankbalance,
+  updateBankBalanceFromUser,
+  deleteBankBalanceFromUser,
+  getBankBalanceFromUser
+} from './bankBalanceFunctions';
 import {UserTest} from '../app/interfaces/User';
 import jwt from 'jsonwebtoken';
 import { ShoppingItemTest } from '../app/interfaces/ShoppingItem';
 import app from '../app/app'
 import LoginMessageResponse from '../app/interfaces/LoginMessageResponse'
 import { ShoppingItemListTest } from '../app/interfaces/ShoppingItemList';
+import { BankBalanceTest } from '../app/interfaces/BankBalance';
 describe('Testing graphql api', () => {
   beforeAll(async () => {
     await mongoose.connect(process.env.DATABASE_URL as string);
@@ -39,9 +46,7 @@ describe('Testing graphql api', () => {
     await mongoose.connection.close();
   });
 
-  /*
-    User tests
-  */
+//#region User tests
   let userData: LoginMessageResponse;
   let userData2: LoginMessageResponse;
   let adminData: LoginMessageResponse;
@@ -117,9 +122,9 @@ describe('Testing graphql api', () => {
   it('should update user', async () => {
     await putUser(app, userData.token!);
   });
-
+//#endregion
+//#region Shopping list tests
   /*
-    Shopping list tests
     The delete item test is after the updateing lists test
   */
 
@@ -221,4 +226,34 @@ describe('Testing graphql api', () => {
   it('should create a purchase after completing a list',async () => {
     await createPurchaseAfterCompletingAList();
   })*/
+//#endregion
+//#region Bank Balance tests
+  let newBankBalance: BankBalanceTest = {
+    accountName: "Super Name",
+    balance: 12323.23,
+    iban: "DE1372934027390"
+  }
+  let bankBalanceId: string;
+  it('should create a bank balance',async () => {
+    const returnedBalance = await postBankbalance(app, newBankBalance, userData.token!);
+    bankBalanceId = returnedBalance.id!;
+  })
+  it('should not create a second bank balance for the same user',async () => {
+    await postBankbalance(app, newBankBalance, userData.token!);
+  })
+  it('should be possible to get the bank balance from a user',async () => {
+    await getBankBalanceFromUser(app, bankBalanceId, userData.token!);
+  })
+  let updatedBankBalance: BankBalanceTest = {
+    accountName: "NEWWWWWWW Super Name",
+    balance: 99999999999,
+    iban: "DE12345"
+  }
+  it('should be possible to update a bank balance',async () => {
+    await updateBankBalanceFromUser(app, updatedBankBalance, bankBalanceId, userData.token!)
+  })
+  it('should be possible to delete a bank balance',async () => {
+    await deleteBankBalanceFromUser(app, bankBalanceId, userData.token!)
+  })
+//#endregion
 })

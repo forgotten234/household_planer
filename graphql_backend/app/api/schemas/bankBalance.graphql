@@ -1,0 +1,21 @@
+type BankBalance {
+  id: ID!
+  accountName: String!
+  balance: Float!
+  iban: String!
+  owner: User!
+} 
+
+type Query {
+  bankBalanceFromUser(id: ID!): [BankBalance]
+}
+
+type Mutation {
+  createBankBalance(
+    accountName: String!
+    balance: Float!
+    iban: String!
+  ): BankBalance
+  updateBankBalanceFromUser(id: ID!, accountName: String!, balance: Float!, iban: String!): BankBalance
+  deleteBankBalanceFromUser(id: ID!): BankBalance
+}
