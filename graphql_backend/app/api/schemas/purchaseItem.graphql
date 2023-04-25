@@ -1,0 +1,29 @@
+scalar DateTime
+
+type PurchaseItem {
+  id: ID!
+  title: String!
+  type: String!
+  price: Float!
+  owner: User!
+} 
+
+type Query {
+  purchaseItemsFromUser(id: ID!): [PurchaseItem]
+  #calenderItemById(id: ID!): CalenderItem
+}
+
+type Mutation {
+  createPurchaseItem(
+    title: String!
+    type: String!
+    price: Float!
+  ): PurchaseItem
+  updatePurchaseItemFromUser(
+    id: ID!,   
+    title: String!
+    type: String!
+    price: Float!): PurchaseItem
+  #updateCalenderItemFromUser(id: ID!, title: String!, description: String!): CalenderItem
+  deletePurchaseItemFromUser(id: ID!): PurchaseItem
+}

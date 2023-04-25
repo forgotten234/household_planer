@@ -1,0 +1,25 @@
+scalar DateTime
+
+type CalenderItem {
+  id: ID!
+  title: String!
+  description: String!
+  date: DateTime!
+  owner: User!
+} 
+
+type Query {
+  calenderItemsFromUser(id: ID!): [CalenderItem]
+  #calenderItemById(id: ID!): CalenderItem
+}
+
+type Mutation {
+  createCalenderItem(
+    title: String!
+    description: String!
+    date: DateTime!
+  ): CalenderItem
+  updateCalenderItemFromUser(id: ID!, title: String!, description: String!, date: DateTime!): CalenderItem
+  #updateCalenderItemFromUser(id: ID!, title: String!, description: String!): CalenderItem
+  deleteCalenderItemFromUser(id: ID!): CalenderItem
+}

@@ -30,6 +30,12 @@ import {
   deleteBankBalanceFromUser,
   getBankBalanceFromUser
 } from './bankBalanceFunctions';
+import {
+  postCalenderItem,
+  updateBCalenderItemFromUser,
+  deleteCalenderItemFromUser,
+  getAllCalenderItemsFromUser
+} from './calenderItemFunctions'
 import {UserTest} from '../app/interfaces/User';
 import jwt from 'jsonwebtoken';
 import { ShoppingItemTest } from '../app/interfaces/ShoppingItem';
@@ -37,6 +43,9 @@ import app from '../app/app'
 import LoginMessageResponse from '../app/interfaces/LoginMessageResponse'
 import { ShoppingItemListTest } from '../app/interfaces/ShoppingItemList';
 import { BankBalanceTest } from '../app/interfaces/BankBalance';
+import { CalenderItemTest } from '../app/interfaces/CalenderItem';
+import { PurchaseItemTest } from '../app/interfaces/PurchaseItem';
+import { deletePurchaseItemFromUser, getAllPurchaseItemsFromUser, postPurchaseItem, updatePurchaseItemFromUser } from './purchaseItemFunctions';
 describe('Testing graphql api', () => {
   beforeAll(async () => {
     await mongoose.connect(process.env.DATABASE_URL as string);
@@ -255,5 +264,77 @@ describe('Testing graphql api', () => {
   it('should be possible to delete a bank balance',async () => {
     await deleteBankBalanceFromUser(app, bankBalanceId, userData.token!)
   })
+//#endregion
+//#region Calender Item tests
+let newCalenderItem: CalenderItemTest = {
+  title: "Super Calender item",
+  description: "today is the da to ....",
+  date: new Date('2022-01-01'),
+}
+let calenderItemId: string;
+it('should create a calender item',async () => {
+  const returnedCalenderItem = await postCalenderItem(app, newCalenderItem, userData.token!);
+  calenderItemId = returnedCalenderItem.id!;
+})
+let toUpdateCalenderItem: CalenderItemTest = {
+  title: "NEW Super Calender item",
+  description: "NEW today is the da to ....",
+  date: new Date('2022-01-02'),
+}
+it('should update a calender item',async () => {
+  await updateBCalenderItemFromUser(app, toUpdateCalenderItem, calenderItemId, userData.token!);
+})
+let secondCalenderItem: CalenderItemTest = {
+  title: "SECOND Super Calender item",
+  description: "today is the second day to ....",
+  date: new Date('2022-01-07'),
+}
+let calenderItemId2: string;
+it('should create a second calender item',async () => {
+  const returnedSecondCalenderItem = await postCalenderItem(app, secondCalenderItem, userData.token!);
+  calenderItemId2 = returnedSecondCalenderItem.id!;
+})
+it('should return all calender items from a user',async () => {
+  await getAllCalenderItemsFromUser(app, userData.user.id, userData.token!);
+})
+it('should delete a calender item',async () => {
+  await deleteCalenderItemFromUser(app, calenderItemId, userData.token!);
+})
+//#endregion
+//#region purchase item test
+let newPurchaseItem: PurchaseItemTest = {
+  title: "Super Purchase item",
+  type: "Food",
+  price: 200000,
+}
+let purchaseItemId: string;
+it('should create a purchase item',async () => {
+  const returnedpurchaseItem = await postPurchaseItem(app, newPurchaseItem, userData.token!);
+  purchaseItemId = returnedpurchaseItem.id!;
+})
+let toUpdatePurchaseItem: PurchaseItemTest = {
+  title: "NEWWWWW Super purchase item",
+  type: "NEWWWWW Food",
+  price: 120000,
+}
+it('should update a purchase item',async () => {
+  await updatePurchaseItemFromUser(app, toUpdatePurchaseItem, purchaseItemId, userData.token!);
+})
+let secondPurchaseITEM: PurchaseItemTest = {
+  title: "SECOND Super purchase item",
+  type: "SECOND Food",
+  price: 120000,
+}
+let purchaseItemId2: string;
+it('should create a second purchase item',async () => {
+  const returnedSecondPurchaseItem = await postPurchaseItem(app, secondPurchaseITEM, userData.token!);
+  purchaseItemId2 = returnedSecondPurchaseItem.id!;
+})
+it('should return all calender items from a user',async () => {
+  await getAllPurchaseItemsFromUser(app, userData.user.id, userData.token!);
+})
+it('should delete a calender item',async () => {
+  await deletePurchaseItemFromUser(app, purchaseItemId, userData.token!);
+})
 //#endregion
 })
