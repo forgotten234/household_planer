@@ -24,14 +24,17 @@ input UserInput {
   user_name: String!
   email: String!
   password: String!
+  role: String
 }
 
 input UserModify {
+  id: String
   first_name: String
   second_name: String
   user_name: String
   email: String
   password: String
+  role: String
 }
 
 type Query {
@@ -45,6 +48,6 @@ type Mutation {
   register(user: UserInput!): TokenMessage
   updateUser(user: UserModify!): TokenMessage
   deleteUser: TokenMessage
-  updateUserAsAdmin(user: UserModify!, id: ID!): TokenMessage
+  updateUserAsAdmin(user: UserModify!): TokenMessage
   deleteUserAsAdmin(id: ID!): TokenMessage
 }

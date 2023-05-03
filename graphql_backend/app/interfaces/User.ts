@@ -22,7 +22,7 @@ interface UserTest {
 interface UserIdWithToken {
   id: string;
   token: string;
-  role: 'admin' | 'user';
+  role: string;
 }
 
 export {User, UserTest, UserIdWithToken};
