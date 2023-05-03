@@ -9,7 +9,7 @@ type ShoppingItem {
 type Query {
   shoppingItems: [ShoppingItem]
   shoppingItemById(id: ID!): ShoppingItem
-  shoppingItemsByUser(ownerId: ID!): [ShoppingItem]
+  shoppingItemsByUser(id: ID!): [ShoppingItem]
 }
 
 type Mutation {

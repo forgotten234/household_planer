@@ -213,7 +213,33 @@ export default {
       const userFromDelete = (await response.json()) as LoginMessageResponse;
       return userFromDelete;
     },
-    updateUserAsAdmin: async () => {},
+    updateUserAsAdmin: async (      
+      _parent: unknown,
+      args: User,
+      user: UserIdWithToken) => {
+        if (!user.token || user.role !== 'admin') {
+          throw new GraphQLError('Not authorized', {
+            extensions: {code: 'NOT_AUTHORIZED'},
+          });
+        }
+        console.log("sdfsdggd" + args)
+        const response = await fetch(`${process.env.AUTH_URL}/users/`+ args.id, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${user.token}`,
+          },
+          body: JSON.stringify(args),
+        });
+        if (!response.ok) {
+          throw new GraphQLError(response.statusText, {
+            extensions: {code: 'NOT_FOUND'},
+          });
+        }
+        const userFromPut = (await response.json()) as LoginMessageResponse;
+        console.log(userFromPut)
+        return userFromPut;
+      },
     deleteUserAsAdmin: async (
       _parent: unknown,
       args: User,

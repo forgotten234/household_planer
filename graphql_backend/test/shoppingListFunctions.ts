@@ -146,6 +146,7 @@ const getShoppingListItemsByUser = (
         } else {
           const items = response.body.data.shoppingItemsByUser;
           expect(items).toBeInstanceOf(Array);
+          expect(items.length).toBeGreaterThan(1)
           console.log(items)
           items.forEach((item: ShoppingItemTest) => {
             expect(item).toHaveProperty('id');
