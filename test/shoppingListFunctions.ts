@@ -123,8 +123,8 @@ const getShoppingListItemsByUser = (
       .set('Content-type', 'application/json')
       .set('Authorization', `Bearer ${token}`)
       .send({
-        query: `query ShoppingItemsByUser($ownerId: ID!) {
-          shoppingItemsByUser(ownerId: $ownerId) {
+        query: `query ShoppingItemsByUser($id: ID!) {
+          shoppingItemsByUser(id: $ownerId) {
             description
             id
             owner {
