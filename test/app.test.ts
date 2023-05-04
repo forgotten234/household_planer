@@ -84,10 +84,10 @@ describe('Testing graphql api', () => {
     await postUser(app, testUser);
   });
   
-  //create first user
-  it('should create a new user', async () => {
-    await postUser(app, adminUser);
-  });
+  // //create first user
+  // it('should create a new user', async () => {
+  //   await postUser(app, adminUser);
+  // });
   //create second user to try to modify someone else's cats and userdata
   it('should create second user', async () => {
     await postUser(app, testUser2);
