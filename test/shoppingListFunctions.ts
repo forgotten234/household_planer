@@ -123,21 +123,21 @@ const getShoppingListItemsByUser = (
       .set('Content-type', 'application/json')
       .set('Authorization', `Bearer ${token}`)
       .send({
-        query: `query ShoppingItemsByUser($id: ID!) {
-          shoppingItemsByUser(id: $ownerId) {
-            description
+        query: `query Query($shoppingItemsByUserId: ID!) {
+          shoppingItemsByUser(id: $shoppingItemsByUserId) {
+            title
             id
+            type
+            description
             owner {
               user_name
               id
               email
             }
-            type
-            title
           }
         }`,        
         variables: {
-          ownerId: id,
+          shoppingItemsByUserId: id,
         },
       })
       .expect(200, (err, response) => {
