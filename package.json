@@ -8,7 +8,7 @@
     "start": "node dist/app/index.ts",
     "dev": "nodemon app/index.ts",
     "build": "tsc",
-    "copyGraphql": "copyfiles --error src/api/schemas/*.graphql dist",
+    "copyGraphql": "copyfiles --error app/api/schemas/*.graphql dist",
     "postbuild": "npm run copyGraphql"
   },
   "keywords": [],
