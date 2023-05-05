@@ -25,6 +25,7 @@ Nodejs, Expressjs, GraphQL, Typescript, JWT, bycrypt
 - The page is not 100% responsive. This needs to be done in future.
 - A redirect from the "/"-page if you are already logged in is not implemented.
 - The code gets because of time reasons a bit messy (frontend). There needs to a bit refactoring.
+- The routing on the azure site is not working if you refresh the page. The frontend project needs to have a static webapp routing file for that (https://learn.microsoft.com/en-us/azure/static-web-apps/configuration#fallback-routes).
 
 ## Install and run 
 
