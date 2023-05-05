@@ -2,7 +2,7 @@
   "name": "graphql_backend",
   "version": "1.0.0",
   "description": "",
-  "main": "app/index.js",
+  "main": "app/index.ts",
   "scripts": {
     "test": "jest --detectOpenHandles --forceExit",
     "start": "node dist/app/index.ts",
