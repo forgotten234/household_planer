@@ -1,6 +1,6 @@
 import request from 'supertest';
 import expect from 'expect';
-import {PurchaseItemTest} from '../app/interfaces/PurchaseItem';
+import {PurchaseItemTest} from '../src/interfaces/PurchaseItem';
 
 require('dotenv').config()
 

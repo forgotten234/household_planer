@@ -2,13 +2,13 @@
   "name": "graphql_backend",
   "version": "1.0.0",
   "description": "",
-  "main": "app/index.ts",
+  "main": "src/index.ts",
   "scripts": {
     "test": "jest --detectOpenHandles --forceExit",
-    "start": "node dist/app/index.ts",
-    "dev": "nodemon app/index.ts",
+    "start": "node dist/src/index.ts",
+    "dev": "nodemon src/index.ts",
     "build": "tsc",
-    "copyGraphql": "copyfiles --error app/api/schemas/*.graphql dist",
+    "copyGraphql": "copyfiles --error src/api/schemas/*.graphql dist",
     "postbuild": "npm run copyGraphql"
   },
   "keywords": [],

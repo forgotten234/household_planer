@@ -1,10 +1,10 @@
 /* eslint-disable node/no-unpublished-import */
 import request from 'supertest';
 import expect from 'expect';
-import {UserTest} from '../app/interfaces/User';
-import ErrorResponse from '../app/interfaces/ErrorResponse';
+import {UserTest} from '../src/interfaces/User';
+import ErrorResponse from '../src/interfaces/ErrorResponse';
 import randomstring from 'randomstring';
-import LoginMessageResponse from '../app/interfaces/LoginMessageResponse';
+import LoginMessageResponse from '../src/interfaces/LoginMessageResponse';
 
 // get user from graphql query users
 const getUser = (url: string | Function): Promise<UserTest[]> => {

@@ -1,6 +1,6 @@
 import request from 'supertest';
 import expect from 'expect';
-import {BankBalanceTest} from '../app/interfaces/BankBalance';
+import {BankBalanceTest} from '../src/interfaces/BankBalance';
 
 require('dotenv').config();
 

@@ -36,15 +36,15 @@ import {
   deleteCalenderItemFromUser,
   getAllCalenderItemsFromUser
 } from './calenderItemFunctions'
-import {UserTest} from '../app/interfaces/User';
+import {UserTest} from '../src/interfaces/User';
 import jwt from 'jsonwebtoken';
-import { ShoppingItemTest } from '../app/interfaces/ShoppingItem';
-import app from '../app/app'
-import LoginMessageResponse from '../app/interfaces/LoginMessageResponse'
-import { ShoppingItemListTest } from '../app/interfaces/ShoppingItemList';
-import { BankBalanceTest } from '../app/interfaces/BankBalance';
-import { CalenderItemTest } from '../app/interfaces/CalenderItem';
-import { PurchaseItemTest } from '../app/interfaces/PurchaseItem';
+import { ShoppingItemTest } from '../src/interfaces/ShoppingItem';
+import app from '../src/app'
+import LoginMessageResponse from '../src/interfaces/LoginMessageResponse'
+import { ShoppingItemListTest } from '../src/interfaces/ShoppingItemList';
+import { BankBalanceTest } from '../src/interfaces/BankBalance';
+import { CalenderItemTest } from '../src/interfaces/CalenderItem';
+import { PurchaseItemTest } from '../src/interfaces/PurchaseItem';
 import { deletePurchaseItemFromUser, getAllPurchaseItemsFromUser, postPurchaseItem, updatePurchaseItemFromUser } from './purchaseItemFunctions';
 describe('Testing graphql api', () => {
   beforeAll(async () => {

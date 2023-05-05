@@ -1,7 +1,7 @@
 import request from 'supertest';
 import expect from 'expect';
-import {ShoppingItem, ShoppingItemTest} from '../app/interfaces/ShoppingItem';
-import {ShoppingItemListTest} from '../app/interfaces/ShoppingItemList';
+import {ShoppingItem, ShoppingItemTest} from '../src/interfaces/ShoppingItem';
+import {ShoppingItemListTest} from '../src/interfaces/ShoppingItemList';
 
 require('dotenv').config();
 

@@ -1,6 +1,6 @@
 import request from 'supertest';
 import expect from 'expect';
-import {CalenderItemTest} from '../app/interfaces/CalenderItem';
+import {CalenderItemTest} from '../src/interfaces/CalenderItem';
 
 require('dotenv').config();
 
