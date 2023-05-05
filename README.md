@@ -26,6 +26,7 @@ Nodejs, Expressjs, GraphQL, Typescript, JWT, bycrypt
 - A redirect from the "/"-page if you are already logged in is not implemented.
 - The code gets because of time reasons a bit messy (frontend). There needs to a bit refactoring.
 - The routing on the azure site is not working if you refresh the page. The frontend project needs to have a static webapp routing file for that (https://learn.microsoft.com/en-us/azure/static-web-apps/configuration#fallback-routes).
+- Not all pages has a loading mechanismn like the login page. This should be implemented everywhere somethig is created or loaded.
 
 ## Install and run 
 
